@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,3 +33,11 @@ jobs:
         with:
           name: PWFish-apk
           path: PWFish/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Terbitkan di Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp PWFish/app/build/outputs/apk/debug/app-debug.apk PWFish.apk
+          gh release delete latest -y --cleanup-tag || true
+          gh release create latest PWFish.apk --title "PW Fish (build terbaru)" --notes "APK hasil build otomatis dari commit ${{ github.sha }}"
