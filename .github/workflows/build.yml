@@ -39,5 +39,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp PWFish/app/build/outputs/apk/debug/app-debug.apk PWFish.apk
-          gh release delete latest -y --cleanup-tag || true
-          gh release create latest PWFish.apk --title "PW Fish (build terbaru)" --notes "APK hasil build otomatis dari commit ${{ github.sha }}"
+          TAG=latest; [ "${{ github.ref_name }}" != "main" ] && TAG="${{ github.ref_name }}"
+          gh release delete $TAG -y --cleanup-tag || true
+          gh release create $TAG PWFish.apk --title "PW Fish (build terbaru)" --notes "APK hasil build otomatis dari commit ${{ github.sha }}"
